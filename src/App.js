@@ -16,31 +16,17 @@ import Todo from './components/Todo';
 function App() {
    useEffect( ()=>{
     async function fetchData(){
-  const data = collection(db, 'todo_list');
-  // // console.log(data);
-  // const dataSnapshot = await getDocs(data);
-  // const todo_list = dataSnapshot.docs.map(doc => doc.data());
-  // // console.log(todo_list);
-
-  const q = query(collection(db, "todo_list"), where("title", "==", "Learn angular"));
-
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-  
-});
-
+      const collectionRef = collection(db,'todo_list');
+      const queryStatement = query(collectionRef)   
+      const querySnapshots = await getDocs(queryStatement);
+      querySnapshots.forEach((doc)=>{
+        console.log(doc.data());
+      });
     }
     fetchData();
-    // db.collection("todo_list").onSnapshot(item=>{
-    //   console.log(item.docs);
-    // })
-  
-
   }, [])
-  const [todos, setTodos] = useState(["Todo1", "Todo2"]);
-  const [newTodo, setNewTodo] = useState("nt");
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState("");
 
   const handleAddTodo = (event)=> {
       event.preventDefault();
