@@ -6,6 +6,8 @@ import {Button, FormControl, Input, InputLabel} from '@material-ui/core';
 import { collection, getDocs,addDoc } from 'firebase/firestore/lite';
 import { query, orderBy, limit, where } from "firebase/firestore";  
 
+import {ListItem, List, ListItemText} from '@material-ui/core'
+
 
 
 import{ db} from './firebase';
@@ -16,7 +18,8 @@ import Todo from './components/Todo';
 function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
-  
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect( ()=>{
     console.log("fetching......")
     fetchData();
@@ -31,10 +34,12 @@ function App() {
       data.push({item:doc.data(),id:doc.id});
     });
     setTodos(data);
+    setIsLoading(false);
   }
 
   const handleAddTodo = (event)=> {
       event.preventDefault();
+      setIsLoading(true);
       setNewTodo("");
       async function post(){
       await addDoc(collection(db, 'todo_list'), {
@@ -56,10 +61,11 @@ function App() {
         onChange={event=>setNewTodo(event.target.value)}/>
         </FormControl>
         <Button variant='contained' color="secondary" type="submit" onClick={handleAddTodo}>Add todo</Button>
-        <ul>
+        {isLoading && <div>Loading....</div>}
+        {!isLoading && <ul>
         {todos.map(todo =>{
-          return <li key={todo.id}>{todo.item.title}</li>})}
-        </ul> 
+          return <List key={todo.id}>{todo.item.title}</List>})}
+        </ul>}
       </form>
     </div>
   );
