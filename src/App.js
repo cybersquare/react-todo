@@ -3,7 +3,7 @@ import './App.css';
 
 import  {useState, useEffect} from 'react';
 import {Button, FormControl, Input, InputLabel} from '@material-ui/core';
-import { collection, getDocs } from 'firebase/firestore/lite';
+import { collection, getDocs,addDoc } from 'firebase/firestore/lite';
 import { query, orderBy, limit, where } from "firebase/firestore";  
 
 
@@ -14,31 +14,41 @@ import{ db} from './firebase';
 import Todo from './components/Todo';
 
 function App() {
-   useEffect( ()=>{
-    async function fetchData(){
-      const collectionRef = collection(db,'todo_list');
-      const queryStatement = query(collectionRef)   
-      const querySnapshots = await getDocs(queryStatement);
-      querySnapshots.forEach((doc)=>{
-        console.log(doc.data());
-      });
-    }
-    fetchData();
-  }, [])
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
+  
+  useEffect( ()=>{
+    console.log("fetching......")
+    fetchData();
+  }, []);
+  
+  async function fetchData(){
+    const collectionRef = collection(db,'todo_list');
+    const queryStatement = query(collectionRef)   
+    const querySnapshots = await getDocs(queryStatement);
+    const data = [];
+    querySnapshots.forEach((doc)=>{
+      data.push({item:doc.data(),id:doc.id});
+    });
+    setTodos(data);
+  }
 
   const handleAddTodo = (event)=> {
       event.preventDefault();
-      setTodos([...todos, newTodo]);
       setNewTodo("");
-      console.log(todos);
+      async function post(){
+      await addDoc(collection(db, 'todo_list'), {
+        title: newTodo
+      })
+      fetchData();
+    }
+    post();
 
   }
 
   return (
     <div className="App">
-      <h1>to do app</h1>
+      <h1>Todo List</h1>
       <form>
       <FormControl>
         <InputLabel htmlFor="txt_todo" >New todo</InputLabel>
@@ -47,11 +57,9 @@ function App() {
         </FormControl>
         <Button variant='contained' color="secondary" type="submit" onClick={handleAddTodo}>Add todo</Button>
         <ul>
-        {/* {todos.map(todo => <li key={todo}>{todo}</li> )} */}
-        {todos.map(todo => <Todo data={todo}/> )}
-
-        </ul>
-
+        {todos.map(todo =>{
+          return <li key={todo.id}>{todo.item.title}</li>})}
+        </ul> 
       </form>
     </div>
   );

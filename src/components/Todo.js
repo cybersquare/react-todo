@@ -1,11 +1,12 @@
 
-import {ListItem, List} from '@material-ui/core'
+import {ListItem, List, ListItemText} from '@material-ui/core'
 
 function Todo(props){
-
     return(
         <List>
-            <ListItem key={props.data}>{props.data}</ListItem>
+            <ListItem key={props.data.id}>
+                <ListItemText primary="test"/>
+            </ListItem>
         </List>
     );
 }
