@@ -3,8 +3,8 @@ import './App.css';
 
 import  {useState, useEffect} from 'react';
 import {Button, FormControl, Input, InputLabel} from '@material-ui/core';
-import { collection, getDocs,addDoc } from 'firebase/firestore/lite';
-import { query, orderBy, limit, where } from "firebase/firestore";  
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { query,doc,collection, getDocs,addDoc,deleteDoc } from 'firebase/firestore';
 
 import {ListItem, List, ListItemText} from '@material-ui/core'
 
@@ -19,19 +19,28 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const collectionName = 'todo_list';
+  const collectionRef = collection(db,collectionName);
 
   useEffect( ()=>{
     console.log("fetching......")
     fetchData();
   }, []);
+
+  async function deleteData(id){
+    const usersCollection = collection(db, 'todo_list');
+    const docRef = doc(usersCollection, id);
+   await deleteDoc(doc(db,'todo_list',id));
+    console.log(id)
+    await fetchData();
+  }
   
   async function fetchData(){
-    const collectionRef = collection(db,'todo_list');
     const queryStatement = query(collectionRef)   
     const querySnapshots = await getDocs(queryStatement);
     const data = [];
     querySnapshots.forEach((doc)=>{
-      data.push({item:doc.data(),id:doc.id});
+      data.push({item:doc.data(),id:doc.id, ref:doc.ref});
     });
     setTodos(data);
     setIsLoading(false);
@@ -64,7 +73,12 @@ function App() {
         {isLoading && <div>Loading....</div>}
         {!isLoading && <ul>
         {todos.map(todo =>{
-          return <List key={todo.id}>{todo.item.title}</List>})}
+          return <List key={todo.id}>
+            <ListItem>
+             <ListItemText primary={todo.item.title} secondary={todo.id}/>
+            </ListItem>
+            <DeleteForeverIcon onClick={()=>{deleteData(todo.id)}}/>
+          </List>})}
         </ul>}
       </form>
     </div>
