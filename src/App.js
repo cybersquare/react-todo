@@ -2,18 +2,12 @@
 import './App.css';
 
 import  {useState, useEffect} from 'react';
-import {Button,TextField, FormControl, Input, InputLabel} from '@material-ui/core';
+import {Button,TextField} from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { query,doc,collection, getDocs,addDoc,deleteDoc,serverTimestamp } from 'firebase/firestore';
-
+import { updateDoc,setDoc,query,doc,collection, getDocs,addDoc,deleteDoc,serverTimestamp } from 'firebase/firestore';
 import {ListItem, List, ListItemText} from '@material-ui/core'
 
-
-
 import{ db} from './firebase';
-
-
-import Todo from './components/Todo';
 
 function App() {
   const [todos, setTodos] = useState([]);
