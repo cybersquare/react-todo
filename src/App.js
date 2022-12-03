@@ -56,7 +56,6 @@ function App() {
       fetchData();
     }
     post();
-
   }
 
   return (
@@ -72,7 +71,7 @@ function App() {
         {isLoading && <div>Loading....</div>}
         {!isLoading && <ul>
         {todos.map(todo =>{
-          return <List key={todo.id}>
+          return <List key={todo.id} className="todo_list">
             <ListItem>
              <ListItemText primary={todo.item.title} secondary={todo.id}/>
             </ListItem>
