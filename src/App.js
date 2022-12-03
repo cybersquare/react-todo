@@ -60,7 +60,7 @@ function App() {
         <Input type="text" id="txt_todo" value={newTodo}
         onChange={event=>setNewTodo(event.target.value)}/>
         </FormControl>
-        <Button variant='contained' color="secondary" type="submit" onClick={handleAddTodo}>Add todo</Button>
+        <Button variant='outlined' color="secondary" type="submit" onClick={handleAddTodo} disabled={!newTodo}>Add todo</Button>
         {isLoading && <div>Loading....</div>}
         {!isLoading && <ul>
         {todos.map(todo =>{
