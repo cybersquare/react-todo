@@ -2,7 +2,7 @@
 import './App.css';
 
 import  {useState, useEffect} from 'react';
-import {Button, FormControl, Input, InputLabel} from '@material-ui/core';
+import {Button,TextField, FormControl, Input, InputLabel} from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { query,doc,collection, getDocs,addDoc,deleteDoc,serverTimestamp } from 'firebase/firestore';
 
@@ -62,11 +62,9 @@ function App() {
     <div className="App">
       <h1>Todo List</h1>
       <form>
-      <FormControl>
-        <InputLabel htmlFor="txt_todo" >New todo</InputLabel>
-        <Input type="text" id="txt_todo" value={newTodo}
-        onChange={event=>setNewTodo(event.target.value)}/>
-        </FormControl>
+        {/* <InputLabel htmlFor="txt_todo" >New todo</InputLabel> */}
+        <TextField type="text" id="txt_todo" value={newTodo} label="Enter todo here" variant="outlined" size='small'
+        onChange={event=>setNewTodo(event.target.value)} style={{marginRight:10}}/>
         <Button variant='outlined' color="secondary" type="submit" onClick={handleAddTodo} disabled={!newTodo}>Add todo</Button>
         {isLoading && <div>Loading....</div>}
         {!isLoading && <ul>
