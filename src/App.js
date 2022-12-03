@@ -4,7 +4,7 @@ import './App.css';
 import  {useState, useEffect} from 'react';
 import {Button, FormControl, Input, InputLabel} from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { query,doc,collection, getDocs,addDoc,deleteDoc } from 'firebase/firestore';
+import { query,doc,collection, getDocs,addDoc,deleteDoc,serverTimestamp } from 'firebase/firestore';
 
 import {ListItem, List, ListItemText} from '@material-ui/core'
 
@@ -28,10 +28,8 @@ function App() {
   }, []);
 
   async function deleteData(id){
-    const usersCollection = collection(db, 'todo_list');
-    const docRef = doc(usersCollection, id);
-   await deleteDoc(doc(db,'todo_list',id));
-    console.log(id)
+    const docRef = doc(db,collectionName, id);
+    await deleteDoc(docRef);
     await fetchData();
   }
   
@@ -52,7 +50,8 @@ function App() {
       setNewTodo("");
       async function post(){
       await addDoc(collection(db, 'todo_list'), {
-        title: newTodo
+        title: newTodo,
+        createdAt: serverTimestamp()
       })
       fetchData();
     }
